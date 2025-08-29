@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dynamic Registration Form</title>
+  <style>
+    .error { color: red; font-size: 0.9em; }
+    .valid { color: green; font-size: 0.9em; }
+    input:invalid { border-color: red; }
+    input:valid { border-color: green; }
+  </style>
+</head>
+<body>
+  <form id="registrationForm" novalidate>
+    <label>
+      Name:
+      <input type="text" id="name" name="name" required>
+      <span id="nameError" class="error"></span>
+    </label>
+    <br><br>
+    <label>
+      Email:
+      <input type="email" id="email" name="email" required>
+      <span id="emailError" class="error"></span>
+    </label>
+    <br><br>
+    <label>
+      Password:
+      <input type="password" id="password" name="password" required>
+      <span id="passwordError" class="error"></span>
+    </label>
+    <br><br>
+    <button id="submitBtn" type="submit" disabled>Submit</button>
+  </form>
+
+  <script>
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const submitBtn = document.getElementById('submitBtn');
+
+    const nameError = document.getElementById('nameError');
+    const emailError = document.getElementById('emailError');
+    const passwordError = document.getElementById('passwordError');
+
+    function validateName() {
+      if(nameInput.value.trim() === "") {
+        nameError.textContent = "Name is required.";
+        return false;
+      }
+      nameError.textContent = "";
+      return true;
+    }
+
+    function validateEmail() {
+      const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+      if(emailInput.value.trim() === "") {
+        emailError.textContent = "Email is required.";
+        return false;
+      }
+      if(!emailRegex.test(emailInput.value.trim())) {
+        emailError.textContent = "Invalid email format.";
+        return false;
+      }
+      emailError.textContent = "";
+      return true;
+    }
+
+    function validatePassword() {
+      const password = passwordInput.value;
+      if(password.length < 8) {
+        passwordError.textContent = "Password must be at least 8 characters.";
+        return false;
+      }
+      if(!/[A-Z]/.test(password)) {
+        passwordError.textContent = "Password must have at least one uppercase letter.";
+        return false;
+      }
+      if(!/[0-9]/.test(password)) {
+        passwordError.textContent = "Password must have at least one number.";
+        return false;
+      }
+      passwordError.textContent = "";
+      return true;
+    }
+
+    function validateForm() {
+      const nameValid = validateName();
+      const emailValid = validateEmail();
+      const passwordValid = validatePassword();
+      submitBtn.disabled = !(nameValid && emailValid && passwordValid);
+    }
+
+    nameInput.addEventListener('blur', validateName);
+    emailInput.addEventListener('blur', validateEmail);
+    passwordInput.addEventListener('blur', validatePassword);
+
+    nameInput.addEventListener('input', validateForm);
+    emailInput.addEventListener('input', validateForm);
+    passwordInput.addEventListener('input', validateForm);
+
+    document.getElementById('registrationForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('Form submitted successfully!');
+    });
+  </script>
+</body>
+</html>

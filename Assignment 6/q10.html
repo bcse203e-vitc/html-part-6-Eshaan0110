@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dynamic Form Builder</title>
+  <style>
+    .error { color: red; }
+  </style>
+</head>
+<body>
+  <label for="inputType">Select Input Type:</label>
+  <select id="inputType">
+    <option value="text">Text</option>
+    <option value="email">Email</option>
+    <option value="password">Password</option>
+  </select>
+  <button id="addInputBtn">Add</button>
+
+  <form id="dynamicForm" novalidate>
+    <div id="inputsContainer"></div>
+    <button type="submit">Submit</button>
+  </form>
+
+  <script>
+    const inputTypeSelect = document.getElementById('inputType');
+    const addInputBtn = document.getElementById('addInputBtn');
+    const inputsContainer = document.getElementById('inputsContainer');
+
+    function getRegex(type) {
+      switch(type) {
+        case 'email':
+          return /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+        case 'password':
+          return /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+        case 'text':
+        default:
+          return /^.+$/; // Non-empty text
+      }
+    }
+
+    let inputCount = 0;
+
+    addInputBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      inputCount++;
+      const type = inputTypeSelect.value;
+
+      const div = document.createElement('div');
+      div.innerHTML = `
+        <label>Input ${inputCount} (${type}):
+          <input type="${type}" name="input${inputCount}" required>
+        </label>
+        <span class="error"></span><br><br>
+      `;
+      inputsContainer.appendChild(div);
+
+      const inputElem = div.querySelector('input');
+      const errorSpan = div.querySelector('span');
+      const regex = getRegex(type);
+
+      inputElem.addEventListener('input', () => {
+        if(!regex.test(inputElem.value)) {
+          errorSpan.textContent = "Invalid " + type + " format";
+        } else {
+          errorSpan.textContent = "";
+        }
+      });
+    });
+
+    document.getElementById('dynamicForm').addEventListener('submit', function(e) {
+      let allValid = true;
+      inputsContainer.querySelectorAll('div').forEach(div => {
+        const input = div.querySelector('input');
+        const errorSpan = div.querySelector('span');
+        const type = input.type;
+        const regex = getRegex(type);
+        if(!regex.test(input.value)) {
+          errorSpan.textContent = "Invalid " + type + " format";
+          allValid = false;
+        }
+      });
+      if(!allValid) e.preventDefault();
+    });
+  </script>
+</body>
+</html>

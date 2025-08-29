@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Email Validation on Blur</title>
+  <style>
+    .error { color: red; font-size: 0.9em; }
+    .success { color: green; font-size: 0.9em; }
+  </style>
+</head>
+<body>
+  <form id="emailForm" novalidate>
+    <label for="email">Email:</label><br>
+    <input type="email" id="email" name="email" required>
+    <span id="emailMessage"></span><br><br>
+    <button type="submit">Submit</button>
+  </form>
+
+  <script>
+    const emailInput = document.getElementById('email');
+    const emailMessage = document.getElementById('emailMessage');
+    const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+
+    emailInput.onblur = function() {
+      if(emailInput.value === "") {
+        emailMessage.textContent = "Email is required";
+        emailMessage.className = "error";
+      } else if(emailRegex.test(emailInput.value)) {
+        emailMessage.textContent = "Valid email format ✔";
+        emailMessage.className = "success";
+      } else {
+        emailMessage.textContent = "Invalid email format";
+        emailMessage.className = "error";
+      }
+    };
+
+    document.getElementById('emailForm').onsubmit = function(e) {
+      if(!emailRegex.test(emailInput.value)) {
+        e.preventDefault();
+        emailMessage.textContent = "Please provide a valid email before submitting.";
+        emailMessage.className = "error";
+      }
+    };
+  </script>
+</body>
+</html>

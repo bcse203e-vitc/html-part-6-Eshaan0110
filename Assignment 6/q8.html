@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Hex Color Code Validation</title>
+  <style>
+    .error { color: red; }
+    .color-preview {
+      display: inline-block;
+      width: 40px;
+      height: 20px;
+      vertical-align: middle;
+      border: 1px solid #000;
+      margin-left: 10px;
+    }
+  </style>
+</head>
+<body>
+  <form id="colorForm" novalidate>
+    <label>Hex Color Code:
+      <input type="text" id="colorCode" placeholder="#FFF or #FFFFFF" required>
+      <span id="colorError" class="error"></span>
+      <div id="previewBox" class="color-preview"></div>
+    </label><br><br>
+    <button type="submit">Submit</button>
+  </form>
+
+  <script>
+    const colorInput = document.getElementById('colorCode');
+    const colorError = document.getElementById('colorError');
+    const previewBox = document.getElementById('previewBox');
+    const regex = /^#([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})$/;
+
+    colorInput.addEventListener('input', function() {
+      const val = colorInput.value;
+      if(regex.test(val)) {
+        colorError.textContent = "";
+        previewBox.style.backgroundColor = val;
+      } else {
+        colorError.textContent = "Invalid hex color code";
+        previewBox.style.backgroundColor = "transparent";
+      }
+    });
+
+    document.getElementById('colorForm').addEventListener('submit', function(e) {
+      if(!regex.test(colorInput.value)) {
+        e.preventDefault();
+        colorError.textContent = "Please enter a valid color code";
+      }
+    });
+  </script>
+</body>
+</html>

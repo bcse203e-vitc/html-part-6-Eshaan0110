@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Password Match Check</title>
+  <style>
+    .match { color: green; }
+    .no-match { color: red; }
+  </style>
+</head>
+<body>
+  <form id="passForm" novalidate>
+    <label>Password:
+      <input type="password" id="password" required>
+    </label><br><br>
+    <label>Confirm Password:
+      <input type="password" id="confirmPassword" required>
+    </label><br>
+    <span id="message"></span><br><br>
+    <button type="submit">Submit</button>
+  </form>
+
+  <script>
+    const password = document.getElementById('password');
+    const confirmPassword = document.getElementById('confirmPassword');
+    const message = document.getElementById('message');
+
+    function checkMatch() {
+      if(password.value === "" || confirmPassword.value === "") {
+        message.textContent = "";
+        return;
+      }
+      if(password.value === confirmPassword.value) {
+        message.textContent = "Passwords match";
+        message.className = "match";
+      } else {
+        message.textContent = "Passwords do not match";
+        message.className = "no-match";
+      }
+    }
+
+    password.addEventListener('input', checkMatch);
+    confirmPassword.addEventListener('input', checkMatch);
+
+    document.getElementById('passForm').addEventListener('submit', function(e) {
+      if(password.value !== confirmPassword.value) {
+        e.preventDefault();
+        alert('Passwords must match before submission.');
+      }
+    });
+  </script>
+</body>
+</html>

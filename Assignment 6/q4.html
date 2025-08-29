@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dynamic Hobbies Form</title>
+  <style>
+    .error { color: red; font-size: 0.9em; }
+    .valid { color: green; font-size: 0.9em; }
+  </style>
+</head>
+<body>
+  <form id="hobbiesForm" novalidate>
+    <div id="hobbiesList">
+      <label>Hobby 1:
+        <input type="text" name="hobby[]" class="hobby-input" required>
+        <span class="hobby-error"></span>
+      </label><br>
+    </div>
+    <button type="button" id="addHobbyBtn">Add Hobby</button><br><br>
+    <button type="submit">Submit</button>
+  </form>
+
+  <script>
+    const hobbyRegex = /^[A-Za-z\s]+$/;
+    const addHobbyBtn = document.getElementById('addHobbyBtn');
+    const hobbiesList = document.getElementById('hobbiesList');
+
+    addHobbyBtn.addEventListener('click', function() {
+      let count = hobbiesList.querySelectorAll('.hobby-input').length + 1;
+      let div = document.createElement('div');
+      div.innerHTML = `<label>Hobby ${count}:
+        <input type="text" name="hobby[]" class="hobby-input" required>
+        <span class="hobby-error"></span>
+      </label><br>`;
+      hobbiesList.appendChild(div);
+    });
+
+    function validateHobby(input, errorElem) {
+      if (input.value === "") {
+        errorElem.textContent = "Hobby cannot be empty";
+        errorElem.className = "hobby-error error";
+        return false;
+      } else if (!hobbyRegex.test(input.value)) {
+        errorElem.textContent = "Only alphabets and spaces allowed";
+        errorElem.className = "hobby-error error";
+        return false;
+      } else {
+        errorElem.textContent = "Valid!";
+        errorElem.className = "hobby-error valid";
+        return true;
+      }
+    }
+
+    hobbiesList.addEventListener('input', function(e) {
+      if (e.target.classList.contains('hobby-input')) {
+        const errorElem = e.target.parentElement.querySelector('.hobby-error');
+        validateHobby(e.target, errorElem);
+      }
+    });
+
+    document.getElementById('hobbiesForm').addEventListener('submit', function(e) {
+      let allValid = true;
+      const hobbyInputs = hobbiesList.querySelectorAll('.hobby-input');
+      hobbyInputs.forEach(function(input) {
+        const errorElem = input.parentElement.querySelector('.hobby-error');
+        if(!validateHobby(input, errorElem)) allValid = false;
+      });
+      if(!allValid) e.preventDefault();
+    });
+  </script>
+</body>
+</html>
